@@ -13,11 +13,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Here tell laravel to call all of our custom seeders
+        $this->call([
+            CarSeeder::class
+        ]);
+        $this->call([
+            ProductSeeder::class
         ]);
     }
 }
