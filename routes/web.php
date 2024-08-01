@@ -39,3 +39,6 @@ Route::get('/cars/{id}', [\App\Http\Controllers\CarController::class, 'getSingle
 Route::get('/products', [\App\Http\Controllers\ProductController::class, 'getAllProducts']);
 Route::get('/products/{id}', [\App\Http\Controllers\ProductController::class, 'getSingleProduct']);
 
+// CATEGORIES
+Route::get('/catagories', [\App\Http\Controllers\CatagoryController::class, 'getAllCatagories']);
+
