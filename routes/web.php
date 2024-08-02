@@ -42,3 +42,7 @@ Route::get('/products/{id}', [\App\Http\Controllers\ProductController::class, 'g
 // CATEGORIES
 Route::get('/catagories', [\App\Http\Controllers\CatagoryController::class, 'getAllCatagories']);
 
+// FOR API
+Route::post('/cars', [\App\Http\Controllers\CarController::class, 'add']);
+Route::delete('/cars/{id}', [\App\Http\Controllers\CarController::class, 'delete']);
+Route::put('/cars/{id}', [\App\Http\Controllers\CarController::class, 'update']);
