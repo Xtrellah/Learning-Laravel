@@ -18,13 +18,22 @@ class CarController extends Controller
                 ->get()
                 ->makeHidden(['seats', 'owned', 'created_at', 'updated_at']);
 
-            return $cars;
+            return response()->json([
+                'message' => 'Cars retrieved',
+                'success' => true,
+                'data' => $cars
+            ]);
         }
         // Using the Car model to get all cars from the DB
         $cars = Car::all()->makeHidden(['seats', 'owned', 'created_at', 'updated_at']);
 
-        return $cars;
+        return response()->json([
+            'message' => 'Cars retrieved',
+            'success' => true,
+            'data' => $cars
+        ]);
     }
+
 
     // Because the route for this method has a {id} placeholder, we add a param to the method with a match name
     public function getSingleCar(int $id)
@@ -33,11 +42,21 @@ class CarController extends Controller
         // Which we can then feed into our models find method to return the specific car requested
         $car = Car::find($id);
 
-        return $car;
+        return response()->json([
+            'message' => 'Car retrieved',
+            'success' => true,
+            'data' => $car
+        ]);
     }
+
 
     public function add(Request $request)
     {
+        // Crucial that we validate all data that comes from $request
+        // No matter what it is or what it does
+        // It does not matter if your front-end does validation
+        // Front end validation is for UX
+        // Back end validation is for security
         $request->validate([
             'make' => 'required|string|min:1|max:50',
             'model' => 'required|string|min:1|max:1000',
@@ -46,7 +65,6 @@ class CarController extends Controller
             'seats' => 'required|numeric|min:1',
             'owned' => 'required|boolean'
         ]);
-        // We need to figure out how to validate the data
 
         // To add a new row to the DB we start by making a new Car
         $car = new Car();
@@ -63,34 +81,54 @@ class CarController extends Controller
         // Save the new car into the DB
 
         if ($car->save()) {
-            return response('It worked!');
+            return response()->json([
+                'message' => 'Car added',
+                'success' => true
+            ], 201);
         }
 
         // This failure will be rare
-        return response('Oh no');
+        return response()->json([
+            'message' => 'Something went wrong',
+            'success' => false
+        ], 500);
     }
+
 
     public function delete(int $id)
     {
         $car = Car::find($id);
 
         if (!$car) {
-            return response('Invalid car id');
+            return response()->json([
+                'message' => 'Invalid car ID',
+                'success' => false
+            ], 400);
         }
 
         if ($car->delete()) {
-            return response('Car deleted');
+            return response()->json([
+                'message' => 'Car deleted',
+                'success' => true
+            ]);
         }
 
-        return response('Oh no');
+        return response()->json([
+            'message' => 'Something went wrong',
+            'success' => false
+        ], 500);
     }
+
 
     public function update(int $id, Request $request)
     {
         $car = Car::find($id);
 
         if (!$car) {
-            return response('Invalid car id');
+            return response()->json([
+                'message' => 'Invalid car ID',
+                'success' => false
+            ], 400);
         }
 
         // ?? is the null coalescing operator
@@ -104,9 +142,17 @@ class CarController extends Controller
         $car->owned = $request->owned ?? $car->owned;
 
         if ($car->save()) {
-            return response('Car updated');
+            return response()->json([
+                'message' => 'Car updated',
+                'success' => true
+            ]);
         }
 
-        return response('Oh no');
+        return response()->json([
+            'message' => 'Something went wrong',
+            'success' => false
+        ], 500);
     }
+
+
 }
