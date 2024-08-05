@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Services\CurrencyConverter;
 
 class ProductController extends Controller
 {
@@ -22,10 +23,12 @@ class ProductController extends Controller
             $productsQuery = $productsQuery->where('stock', '>', 0);
         }
 
+
         // Execute the query with get() and hide the fields we need to
         $products = $productsQuery->get()->makeHidden(['description', 'stock', 'created_at', 'updated_at']);
         // Return the products as a HTTP response
-        return $products;
+        return view($products);
+
     }
 
     public function getSingle(int $id)
@@ -33,4 +36,17 @@ class ProductController extends Controller
         $product = Product::find($id);
         return $product;
     }
+
+    public function view()
+    {
+        $products = Product::all();
+
+        foreach ($products as $product) {
+            $product->price = CurrencyConverter::GBPtoUSD($product->price);
+        }
+
+        return view('example', ['title' => 'Hello World', 'products' => $products]);
+    }
+
 }
+
